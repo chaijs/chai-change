@@ -37,7 +37,7 @@ Either install via npm, or (download `chai-changes`)[src/plugin.js] and save as 
 
 ## Plug In
 
-If you are using `chai-spies` in the browser, there is nothing you need to do.
+If you are using `chai-changes` in the browser, there is nothing you need to do.
 
 If you are using node, you just need to tell `chai` about the plugin:
 
