@@ -1,5 +1,5 @@
 {
-  "name": "chai-changes",
+  "name": "chai-change",
   "version": "0.0.0",
   "author": "Tim Ruffles <timruffles@googlemail.com>",
   "description": "Assert that a change you expected to happen, happened, with the chai library",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:timruffles/chai-changes.git"
+    "url": "git@github.com:timruffles/chai-change.git"
   },
   "keywords": [
     "chai",
@@ -27,6 +27,6 @@
     "chai-plugin"
   ],
   "bugs": {
-    "url": "https://github.com/timruffles/chai-changes/issues"
+    "url": "https://github.com/timruffles/chai-change/issues"
   }
 }

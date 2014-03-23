@@ -1,4 +1,4 @@
-# Chai Changes
+# Chai Change
 
 Assert that a change you expected to happen, happened, with this plugin for the [chai](http://github.com/logicalparadox/chai) assertion library. The plugin works in node and the browser. 
 
@@ -23,28 +23,28 @@ This is more robust as it avoids false positives: in this example, if `users.cou
 
 #### Node.js
 
-`chai-changes` is available on npm.
+`chai-change` is available on npm.
 
-      $ npm install chai-changes
+      $ npm install chai-change
 
 #### Browser
 
-Either install via npm, or [download `chai-changes`](src/plugin.js) and save as `chai-changes.js`. Then simply include after `chai.js`.
+Either install via npm, or [download `chai-change`](src/plugin.js) and save as `chai-change.js`. Then simply include after `chai.js`.
 
 ```xml
-<script src="chai-changes.js"></script>
+<script src="chai-change.js"></script>
 ```
 
 ## Plug In
 
-If you are using `chai-changes` in the browser, there is nothing you need to do.
+If you are using `chai-change` in the browser, there is nothing you need to do.
 
 If you are using node, you just need to tell `chai` about the plugin:
 
 ```js
 var chai = require('chai');
 
-chai.use(require('chai-changes'));
+chai.use(require('chai-change'));
 ```
 
 ## Expect API
