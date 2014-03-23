@@ -79,7 +79,10 @@ changes after the `affect` function has run:
                                                                                        
 ```javascript
 var x = 0;
-assert.change(function() { x += 1; },function() { return x });
+assert.change(affect,getValue);
+
+function affect() { x += 1; }
+function getValue() { return x })
 ```
                                                                                        
 You can pass options to be specific about the changes expected. Use the `from` 
