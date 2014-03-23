@@ -109,5 +109,7 @@ function doesNothing() {}
 
 ## Tests
 
-Just `npm install && mocha`.
+Node: `npm install && mocha`.
+
+Browser: `npm install` then open `test/index.html`.
 

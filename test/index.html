@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="../node_modules/mocha/mocha.css" type="text/css" media="screen" charset="utf-8">
+
+<div id="mocha"></div>
+<script src="../node_modules/mocha/mocha.js"></script>
+<script>mocha.setup('bdd')</script>
+
+<!-- this is how to use chai-changes in the browser: chai first, then the plugin -->
+<script src="../node_modules/chai/chai.js"></script>
+<script src="../src/plugin.js"></script>
+
+<script src="../test/assert_test.js"></script>
+<script src="../test/expect_test.js"></script>
+<script>
+  mocha.checkLeaks();
+  mocha.run();
+</script>
+
