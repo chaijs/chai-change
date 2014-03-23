@@ -53,19 +53,22 @@ chai.use(require('chai-changes'));
 
 Asserts that the value returned by `getValue` changes after the function has run:
 
-    var x = 0;
-    expect(function() { x += 1; }).to.change(function() { return x });
-                                                                                           
-    expect(function() {}).not.to.change(function() { return x });## Tests
-                                                                                           
-You can pass options to be specific about the changes expected. Use the `from` Tests are written using [mocha](http://github.com/visionmedia/mocha). Just `npm install && mocha`.
-key to enforce a starting value, a `to` key for and ending value, and a
+```javascript
+var x = 0;
+expect(function() { x += 1; }).to.change(function() { return x });
+
+expect(function() {}).not.to.change(function() { return x });
+```
+
+You can pass options to be specific about the changes expected. Use the `from` key to enforce a starting value, a `to` key for and ending value, and a
 `by` key to enforce a numeric change.
-                                                                                           
-    expect(function() { x += 1 }).to.change(function() { return x },{by: 1});
-    expect(function() { x += 1 }).to.change(function() { return x },{from: x});
-    expect(function() { x += 1 }).to.change(function() { return x },{from: x, to: x + 1});
-    expect(function() { x += 1 }).to.change(function() { return x },{to: x + 1});
+
+```javascript
+expect(function() { x += 1 }).to.change(function() { return x },{by: 1});
+expect(function() { x += 1 }).to.change(function() { return x },{from: x});
+expect(function() { x += 1 }).to.change(function() { return x },{from: x, to: x + 1});
+expect(function() { x += 1 }).to.change(function() { return x },{to: x + 1});
+```
 
 ## Assert API
 
@@ -74,23 +77,34 @@ key to enforce a starting value, a `to` key for and ending value, and a
 Asserts that the value returned by `getValue`
 changes after the `affect` function has run:
                                                                                        
-    var x = 0;
-    assert.change(function() { x += 1; },function() { return x });
+```javascript
+var x = 0;
+assert.change(function() { x += 1; },function() { return x });
+```
                                                                                        
 You can pass options to be specific about the changes expected. Use the `from` 
 key to enforce a starting value, a `to` key for and ending value, and a
 `by` key to enforce a numeric change.
                                                                                        
-    assert.change(function() { x += 1 },function() { return x },{by: 1});
-    assert.change(function() { x += 1 },function() { return x },{from: x});
-    assert.change(function() { x += 1 },function() { return x },{from: x, to: x + 1});
-    assert.change(function() { x += 1 },function() { return x },{to: x + 1});
+```javascript
+assert.change(function() { x += 1 },function() { return x },{by: 1});
+assert.change(function() { x += 1 },function() { return x },{from: x});
+assert.change(function() { x += 1 },function() { return x },{from: x, to: x + 1});
+assert.change(function() { x += 1 },function() { return x },{to: x + 1});
+```
 
 ### assert.noChange
 
 Asserts that the value returned by `getValue`
 doesn't change after the `affect` has run:
                                                           
-    var x = 0;
-    assert.noChange(doesNothing,function() { return x });
-    function doesNothing() {}
+```javascript
+var x = 0;
+assert.noChange(doesNothing,function() { return x });
+function doesNothing() {}
+```
+
+## Tests
+
+Just `npm install && mocha`.
+
