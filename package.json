@@ -1,0 +1,32 @@
+{
+  "name": "chai-changes",
+  "version": "0.0.0",
+  "description": "Assert that a change you expected to happen, happened, with the chai library",
+  "main": "src/plugin.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Tim Ruffles <oi@truffles.me.uk>",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "chai": "~1.9.1",
+    "mocha": "~1.18.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:timruffles/chai-changes.git"
+  },
+  "keywords": [
+    "chai",
+    "assertions",
+    "assert",
+    "testing",
+    "chai-plugin"
+  ],
+  "bugs": {
+    "url": "https://github.com/timruffles/chai-changes/issues"
+  }
+}
