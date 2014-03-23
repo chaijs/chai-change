@@ -29,7 +29,7 @@ This is more robust as it avoids false positives: in this example, if `users.cou
 
 #### Browser
 
-Either install via npm, or (download `chai-changes`)[src/plugin.js] and save as `chai-changes.js`. Then simply include after `chai.js`.
+Either install via npm, or [download `chai-changes`](src/plugin.js) and save as `chai-changes.js`. Then simply include after `chai.js`.
 
 ```xml
 <script src="chai-changes.js"></script>
