@@ -6,7 +6,7 @@ The idea of the plugin is to make your tests more robust. Rather than doing:
 
 ```javascript
 users.create();
-expect(users.count()).toEqual(1);
+expect(users.count()).to.equal(1);
 ```
 
 instead assert that the action actually causes the expected change
