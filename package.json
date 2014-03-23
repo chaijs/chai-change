@@ -1,6 +1,7 @@
 {
   "name": "chai-changes",
   "version": "0.0.0",
+  "author": "Tim Ruffles <timruffles@googlemail.com>",
   "description": "Assert that a change you expected to happen, happened, with the chai library",
   "main": "src/plugin.js",
   "directories": {
@@ -9,7 +10,6 @@
   "scripts": {
     "test": "mocha"
   },
-  "author": "Tim Ruffles <oi@truffles.me.uk>",
   "license": "BSD-2-Clause",
   "devDependencies": {
     "chai": "~1.9.1",
