@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/timruffles/chai-change.svg?branch=master)](https://travis-ci.org/timruffles/chai-change)
 
-Assert that a change you expected to happen, happened, with this plugin for the [chai](http://github.com/logicalparadox/chai) assertion library. The plugin works in node and the browser. 
+Assert that a change you expected to happen, happened, with this plugin for the [chai](http://github.com/logicalparadox/chai) assertion library. The plugin works in node and the browser, asynchronously or synchronously.
 
 The idea of the plugin is to make your tests more robust. Rather than doing:
 
@@ -107,6 +107,36 @@ doesn't change after the `affect` has run:
 var x = 0;
 assert.noChange(doesNothing,function() { return x });
 function doesNothing() {}
+```
+
+## Asynchronous asserts
+
+Both the `affect` and `getValue` callbacks can optionally take a node-style callback, with `error` as the first parameter. If you provide either with a callback, you need to give a final `callback:` option to the change assertion, that is used to notify your test runner that the test is complete. This works best with test runners that expect node callbacks to control async tests, like mocha in the below example:
+
+```javascript
+var count = 0;
+var User = {
+  create: function(attrs,cb) {
+    setTimeout(function() {
+      count += 1
+      cb();
+    })
+  },
+  count: function(cb) {
+    setTimeout(function() {
+      cb(null,count);
+    })
+  },
+};
+
+expect(function(done) {
+  User.create({name: "bob"},done)
+}).to.change(function(value) {
+  User.count(value);
+},{
+  by: 1,
+  callback: done
+});
 ```
 
 ## Tests
