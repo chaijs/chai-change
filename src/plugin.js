@@ -143,7 +143,13 @@ function plugin(chai,util) {
 }
 
 if(typeof module === "undefined") {
-  chai.use(plugin);
+  if(typeof define === "function" && define.amd) {
+    define([],function() {
+      return plugin;
+    });
+  } else {
+    chai.use(plugin);
+  }
 } else {
   module.exports = plugin;
 }
