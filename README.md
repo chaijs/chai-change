@@ -53,13 +53,13 @@ chai.use(require('chai-change'));
 
 ### .change
 
-Asserts that the value returned by `getValue` changes after the function has run:
+Asserts that the value returned by function passed to `change()` changes after the function has run:
 
 ```javascript
 var x = 0;
-expect(function() { x += 1; }).to.change(function() { return x });
 
-expect(function() {}).not.to.change(function() { return x });
+expect(function() { x += 1; }).to.change(function() { return x });
+expect(function() {     }).not.to.change(function() { return x });
 ```
 
 You can pass options to be specific about the changes expected. Use the `from` key to enforce a starting value, a `to` key for and ending value, and a
@@ -129,10 +129,10 @@ var User = {
   },
 };
 
-expect(function(done) {
-  User.create({name: "bob"},done)
-}).to.change(function(value) {
-  User.count(value);
+expect(function(stepDone) {
+  User.create({name: "bob"},stepDone)
+}).to.change(function(stepDone) {
+  User.count(stepDone);
 },{
   by: 1,
   callback: done
