@@ -17,7 +17,7 @@
     "requirejs": "~2.1.11"
   },
   "peerDependencies": {
-    "chai": "<= 1.9.1"
+    "chai": "< 2.0.0"
   },
   "repository": {
     "type": "git",
