@@ -1,6 +1,6 @@
 # Chai Change
 
-[![Build Status](https://travis-ci.org/chaijs/chai-change.svg?branch=master)](https://travis-ci.org/timruffles/chai-change)
+[![Build Status](https://travis-ci.org/chaijs/chai-change.svg?branch=master)](https://travis-ci.org/chaijs/chai-change)
 
 Assert that a change you expected to happen, happened, with this plugin for the [chai](http://github.com/logicalparadox/chai) assertion library. The plugin works in node and the browser, asynchronously or synchronously.
 
