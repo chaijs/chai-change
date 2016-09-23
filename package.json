@@ -16,6 +16,9 @@
     "mocha": "~1.18.2",
     "requirejs": "~2.1.11"
   },
+  "peerDependencies": {
+    "chai": "<= 1.9.1"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:timruffles/chai-change.git"
