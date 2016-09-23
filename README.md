@@ -16,7 +16,7 @@ instead assert that the action actually causes the expected change
 ```javascript
 expect(function() {
   users.create();
-}).to.change(users.count,{by: 1});
+}).to.alter(users.count,{by: 1});
 ```
 
 This is more robust as it avoids false positives: in this example, if `users.count()` was already 1 and `users.create()` was not implemented, the first example would still pass. Using the change expectation, since there was not a change `{by: 1}` from the starting value, the test would correctly fail.
@@ -58,30 +58,30 @@ Asserts that the value returned by function passed to `change()` changes after t
 ```javascript
 var x = 0;
 
-expect(function() { x += 1; }).to.change(function() { return x });
-expect(function() {     }).not.to.change(function() { return x });
+expect(function() { x += 1; }).to.alter(function() { return x });
+expect(function() {     }).not.to.alter(function() { return x });
 ```
 
 You can pass options to be specific about the changes expected. Use the `from` key to enforce a starting value, a `to` key for and ending value, and a
 `by` key to enforce a numeric change.
 
 ```javascript
-expect(function() { x += 1 }).to.change(function() { return x },{by: 1});
-expect(function() { x += 1 }).to.change(function() { return x },{from: x});
-expect(function() { x += 1 }).to.change(function() { return x },{from: x, to: x + 1});
-expect(function() { x += 1 }).to.change(function() { return x },{to: x + 1});
+expect(function() { x += 1 }).to.alter(function() { return x },{by: 1});
+expect(function() { x += 1 }).to.alter(function() { return x },{from: x});
+expect(function() { x += 1 }).to.alter(function() { return x },{from: x, to: x + 1});
+expect(function() { x += 1 }).to.alter(function() { return x },{to: x + 1});
 ```
 
 ## Assert API
 
-### assert.change
+### assert.alters
 
 Asserts that the value returned by `getValue`
 changes after the `affect` function has run:
                                                                                        
 ```javascript
 var x = 0;
-assert.change(affect,getValue);
+assert.alters(affect,getValue);
 
 function affect() { x += 1; }
 function getValue() { return x }
@@ -92,20 +92,20 @@ key to enforce a starting value, a `to` key for and ending value, and a
 `by` key to enforce a numeric change.
                                                                                        
 ```javascript
-assert.change(function() { x += 1 },function() { return x },{by: 1});
-assert.change(function() { x += 1 },function() { return x },{from: x});
-assert.change(function() { x += 1 },function() { return x },{from: x, to: x + 1});
-assert.change(function() { x += 1 },function() { return x },{to: x + 1});
+assert.alters(function() { x += 1 },function() { return x },{by: 1});
+assert.alters(function() { x += 1 },function() { return x },{from: x});
+assert.alters(function() { x += 1 },function() { return x },{from: x, to: x + 1});
+assert.alters(function() { x += 1 },function() { return x },{to: x + 1});
 ```
 
-### assert.noChange
+### assert.unaltered
 
 Asserts that the value returned by `getValue`
 doesn't change after the `affect` has run:
                                                           
 ```javascript
 var x = 0;
-assert.noChange(doesNothing,function() { return x });
+assert.unaltered(doesNothing,function() { return x });
 function doesNothing() {}
 ```
 
@@ -131,7 +131,7 @@ var User = {
 
 expect(function(stepDone) {
   User.create({name: "bob"},stepDone)
-}).to.change(function(stepDone) {
+}).to.alter(function(stepDone) {
   User.count(stepDone);
 },{
   by: 1,
