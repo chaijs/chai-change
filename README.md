@@ -145,3 +145,8 @@ Node: `npm install && mocha`.
 
 Browser: `npm install` then open `test/index.html`.
 
+## Changelog
+
+### 2.0
+
+- Change methods from `change` to `alter` to avoid the `.change` method added to chai in `chai@2.0.0`.
