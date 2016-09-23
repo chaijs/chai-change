@@ -1,6 +1,6 @@
 {
   "name": "chai-change",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Tim Ruffles <timruffles@googlemail.com>",
   "description": "Assert that a change you expected to happen, happened, with the chai library",
   "main": "src/plugin.js",
