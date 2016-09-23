@@ -5,32 +5,31 @@ function plugin(chai,util) {
   var Assertion = chai.Assertion;
   var flag = util.flag;
 
-  chai.Assertion.addMethod('change',assertChange);
-  chai.Assertion.addMethod('changes',assertChange);
-  chai.assert.change = assertInterfaceChange;
-  chai.assert.noChange = assertInterfaceNoChange;
+  chai.Assertion.addMethod('alter',assertChange);
+  chai.assert.alters = assertInterfaceChange;
+  chai.assert.unaltered = assertInterfaceNoChange;
 
   /**
-   * ### .change(getValue)
+   * ### .alters(getValue)
    *
    * Asserts that the value returned by `getValue`
-   * changes after the function has run:
+   * alters after the function has run:
    *
    *     var x = 0;
-   *     expect(function() { x += 1; }).to.change(function() { return x });
+   *     expect(function() { x += 1; }).to.alter(function() { return x });
    *
-   *     expect(function() {}).not.to.change(function() { return x });
+   *     expect(function() {}).not.to.alter(function() { return x });
    *
-   * You can pass options to be specific about the changes expected. Use the `from` 
+   * You can pass options to be specific about the alters expected. Use the `from` 
    * key to enforce a starting value, a `to` key for and ending value, and a
-   * `by` key to enforce a numeric change.
+   * `by` key to enforce a numeric alters.
    *
-   *     expect(function() { x += 1 }).to.change(function() { return x },{by: 1});
-   *     expect(function() { x += 1 }).to.change(function() { return x },{from: x});
-   *     expect(function() { x += 1 }).to.change(function() { return x },{from: x, to: x + 1});
-   *     expect(function() { x += 1 }).to.change(function() { return x },{to: x + 1});
+   *     expect(function() { x += 1 }).to.alter(function() { return x },{by: 1});
+   *     expect(function() { x += 1 }).to.alter(function() { return x },{from: x});
+   *     expect(function() { x += 1 }).to.alter(function() { return x },{from: x, to: x + 1});
+   *     expect(function() { x += 1 }).to.alter(function() { return x },{to: x + 1});
    *
-   * @name change
+   * @name alters
    * @param {Function} changer
    * @param {Function} getValue
    * @param {Object} options _optional_
@@ -71,12 +70,12 @@ function plugin(chai,util) {
       if('by' in changeSpec) {
         if(typeof changeSpec.by !== 'number' || 
             (changeSpec.from != null && typeof changeSpec.from !== 'number')) {
-          throw new Error('change "by" assertions only work with numbers specified in "by" and or "from" options');
+          throw new Error('alters "by" assertions only work with numbers specified in "by" and or "from" options');
         }
         changeSpec.to = before + changeSpec.by;
       }
       if('from' in changeSpec && changeSpec.from !== before) {
-        throw new Error("change 'from' value wasn't equal to " + util.inspect(before));
+        throw new Error("alters 'from' value wasn't equal to " + util.inspect(before));
       }
     }
 
@@ -124,24 +123,24 @@ function plugin(chai,util) {
 
   };
   /**
-   * ### .change(getValue)
+   * ### .alters(getValue)
    *
    * Asserts that the value returned by `getValue`
-   * changes after the `affect` function has run:
+   * alters after the `affect` function has run:
    *
    *     var x = 0;
-   *     assert.change(function() { x += 1; },function() { return x });
+   *     assert.alters(function() { x += 1; },function() { return x });
    *
-   * You can pass options to be specific about the changes expected. Use the `from` 
+   * You can pass options to be specific about the alters expected. Use the `from` 
    * key to enforce a starting value, a `to` key for and ending value, and a
-   * `by` key to enforce a numeric change.
+   * `by` key to enforce a numeric alters.
    *
-   *     assert.change(function() { x += 1 },function() { return x },{by: 1});
-   *     assert.change(function() { x += 1 },function() { return x },{from: x});
-   *     assert.change(function() { x += 1 },function() { return x },{from: x, to: x + 1});
-   *     assert.change(function() { x += 1 },function() { return x },{to: x + 1});
+   *     assert.alters(function() { x += 1 },function() { return x },{by: 1});
+   *     assert.alters(function() { x += 1 },function() { return x },{from: x});
+   *     assert.alters(function() { x += 1 },function() { return x },{from: x, to: x + 1});
+   *     assert.alters(function() { x += 1 },function() { return x },{to: x + 1});
    *
-   * @name change
+   * @name alters
    * @param {Function} affect
    * @param {Function} getValue
    * @param {Object} options _optional_
@@ -153,20 +152,20 @@ function plugin(chai,util) {
       msg = opts;
       opts = null;
     }
-    new Assertion(fn, msg).to.change(changeWatcher,opts);
+    new Assertion(fn, msg).to.alter(changeWatcher,opts);
   };
 
   /**
-   * ### .change(getValue)
+   * ### .alters(getValue)
    *
    * Asserts that the value returned by `getValue`
-   * doesn't change after the `affect` has run:
+   * doesn't alters after the `affect` has run:
    *
    *     var x = 0;
-   *     assert.noChange(doesNothing,function() { return x });
+   *     assert.unaltered(doesNothing, function() { return x });
    *     function doesNothing() {}
    *
-   * @name change
+   * @name alters
    * @param {Function} affect
    * @param {Function} getValue
    * @param {Object} options _optional_
@@ -179,7 +178,7 @@ function plugin(chai,util) {
       msg = opts;
       opts = null;
     }
-    new Assertion(fn, msg).not.to.change(changeWatcher,opts);
+    new Assertion(fn, msg).not.to.alter(changeWatcher,opts);
   };
 
 }

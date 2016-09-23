@@ -18,9 +18,9 @@ describe("chai-change",function() {
 
   it("works as an AMD module",function(done) {
     require(["chai","chai-change"],function(chai,chaiChange) {
-      assert.isUndefined(chai.assert.change);
+      assert.isUndefined(chai.assert.alters);
       chai.use(chaiChange);
-      assert.isDefined(chai.assert.change);
+      assert.isDefined(chai.assert.alters);
       done();
     });
   });
