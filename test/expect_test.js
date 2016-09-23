@@ -1,13 +1,13 @@
 var expect = chai.expect;
-describe('change assertion enforces changes',function() {
+describe('alter assertion enforces change',function() {
 
   var err = chai.assert.throws;
 
   describe("of any kind",function() {
-    it("by throwing when change doesn't occur",function() {
+    it("by throwing when alter doesn't occur",function() {
       err(function() {
         var value = "start";
-        expect(function() {}).to.change(function() {
+        expect(function() {}).to.alter(function() {
           return value;
         });
       },"expected value to have changed from 'start'");
@@ -16,7 +16,7 @@ describe('change assertion enforces changes',function() {
       var value = "start";
       expect(function() {
         value = "end";
-      }).to.change(function() {
+      }).to.alter(function() {
         return value;
       });
     });
@@ -25,27 +25,28 @@ describe('change assertion enforces changes',function() {
   describe("from a specific value",function() {
     it("by throwing when value wasn't correct before",function() {
       err(function() {
-        expect(function() {}).to.change(function() {
+        expect(function() {}).to.alter(function() {
           return "start";
         },{from: "fnord"});
-      },"change 'from' value wasn't equal to 'start'");
+      },"alters 'from' value wasn't equal to 'start'");
     });
     it("doesn't create false negatives",function() {
       var value = "start";
       expect(function() {
         value = "end";
-      }).to.change(function() {
+      }).to.alter(function() {
         return value;
       },{from: "start"});
     });
   });
+
   describe("to a specific value",function() {
-    it("by throwing when value doesn't change to a specific value",function() {
+    it("by throwing when value doesn't alter to a specific value",function() {
       err(function() {
         var value = "start";
         expect(function() {
           value = "something else";
-        }).to.change(function() {
+        }).to.alter(function() {
           return value;
         },{to: "end"});
       },"expected 'start' to change to 'end', instead changed to 'something else'");
@@ -54,18 +55,19 @@ describe('change assertion enforces changes',function() {
       var value = "start";
       expect(function() {
         value = "end";
-      }).to.change(function() {
+      }).to.alter(function() {
         return value;
       },{to: "end"});
     });
   });
+
   describe("by a specific amount",function() {
     it("by throwing",function() {
       err(function() {
         var value = 10;
         expect(function() {
           value = 15;
-        }).to.change(function() {
+        }).to.alter(function() {
           return value;
         },{by: 10});
       },"expected 10 to change to 20, instead changed to 15");
@@ -74,18 +76,18 @@ describe('change assertion enforces changes',function() {
       var value = 10;
       expect(function() {
         value = 20;
-      }).to.change(function() {
+      }).to.alter(function() {
         return value;
       },{by: 10});
 
     });
-    it("validates a numeric change",function() {
+    it("validates a numeric alter",function() {
       err(function() {
-        expect(noop).to.change(noop,{by: "fnord"});
-      },'change "by" assertions only work with numbers specified in "by" and or "from" options');
+        expect(noop).to.alter(noop,{by: "fnord"});
+      },'alters "by" assertions only work with numbers specified in "by" and or "from" options');
       err(function() {
-        expect(noop).to.change(noop,{by: 5,from:"fnord"});
-      },'change "by" assertions only work with numbers specified in "by" and or "from" options');
+        expect(noop).to.alter(noop,{by: 5,from:"fnord"});
+      },'alters "by" assertions only work with numbers specified in "by" and or "from" options');
       function noop() {}
     });
 
@@ -94,7 +96,7 @@ describe('change assertion enforces changes',function() {
   describe("asynchronous support",function() {
     it("passes errors from getValue through to `callback:`",function() {
       expect(function() {
-      }).to.change(function(value) {
+      }).to.alter(function(value) {
         value("value error");
       },{
         callback: callback
@@ -106,10 +108,10 @@ describe('change assertion enforces changes',function() {
       }
       chai.assert.equal(heard,"value error");
     });
-    it("passes errors from change through to `callback:`",function() {
+    it("passes errors from alter through to `callback:`",function() {
       expect(function(done) {
-        done("change error");
-      }).to.change(function() {
+        done("alter error");
+      }).to.alter(function() {
       },{
         callback: callback
       });
@@ -118,9 +120,9 @@ describe('change assertion enforces changes',function() {
       function callback(err) {
         heard = err;
       }
-      chai.assert.equal(heard,"change error");
+      chai.assert.equal(heard,"alter error");
     });
-    it("can have synchronous getValue and async change function",function(done) {
+    it("can have synchronous getValue and async alter function",function(done) {
       var count = 0;
       var User = {
         create: function(attrs,cb) {
@@ -135,14 +137,14 @@ describe('change assertion enforces changes',function() {
       };
       expect(function(done) {
         User.create({name: "bob"},done)
-      }).to.change(function() {
+      }).to.alter(function() {
         return User.count();
       },{
         by: 1,
         callback: done
       });
     });
-    it("can have asynchronous getValue and sync change function",function(done) {
+    it("can have asynchronous getValue and sync alter function",function(done) {
       var count = 0;
       var User = {
         create: function(attrs,cb) {
@@ -156,14 +158,14 @@ describe('change assertion enforces changes',function() {
       };
       expect(function() {
         User.create({name: "bob"})
-      }).to.change(function(value) {
+      }).to.alter(function(value) {
         User.count(value);
       },{
         by: 1,
         callback: done
       });
     });
-    it("can have asynchronous getValue and change functions",function(done) {
+    it("can have asynchronous getValue and alter functions",function(done) {
       var count = 0;
       var User = {
         create: function(attrs,cb) {
@@ -180,7 +182,7 @@ describe('change assertion enforces changes',function() {
       };
       expect(function(done) {
         User.create({name: "bob"},done)
-      }).to.change(function(value) {
+      }).to.alter(function(value) {
         User.count(value);
       },{
         by: 1,
@@ -191,14 +193,14 @@ describe('change assertion enforces changes',function() {
 
   it("has working examples",function() {
     var x = 0;
-    expect(function() { x += 1; }).to.change(function() { return x });
+    expect(function() { x += 1; }).to.alter(function() { return x });
    
-    expect(function() {}).not.to.change(function() { return x });
+    expect(function() {}).not.to.alter(function() { return x });
    
-    expect(function() { x += 1 }).to.change(function() { return x },{by: 1});
-    expect(function() { x += 1 }).to.change(function() { return x },{from: x});
-    expect(function() { x += 1 }).to.change(function() { return x },{from: x, to: x + 1});
-    expect(function() { x += 1 }).to.change(function() { return x },{to: x + 1});
+    expect(function() { x += 1 }).to.alter(function() { return x },{by: 1});
+    expect(function() { x += 1 }).to.alter(function() { return x },{from: x});
+    expect(function() { x += 1 }).to.alter(function() { return x },{from: x, to: x + 1});
+    expect(function() { x += 1 }).to.alter(function() { return x },{to: x + 1});
   });
 
 });
