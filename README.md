@@ -149,4 +149,4 @@ Browser: `npm install` then open `test/index.html`.
 
 ### 2.0
 
-- Change methods from `change` to `alter` to avoid the `.change` method added to chai in `chai@2.0.0`.
+- *BREAKING CHANGE* Change whole API from `change` to `alter` to avoid the `.change` method added to chai in `chai@2.0.0`.
