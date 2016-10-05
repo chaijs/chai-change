@@ -13,6 +13,7 @@
   "license": "BSD-2-Clause",
   "devDependencies": {
     "chai": "~1.9.1",
+    "es6-promise": "^4.0.5",
     "mocha": "~1.18.2",
     "requirejs": "~2.1.11"
   },

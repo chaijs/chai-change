@@ -1,11 +1,11 @@
 (function() {
 
-function plugin(chai,util) {
+function plugin(chai, util) {
 
   var Assertion = chai.Assertion;
   var flag = util.flag;
 
-  chai.Assertion.addMethod('alter',assertChange);
+  chai.Assertion.addMethod('alter', assertChange);
   chai.assert.alters = assertInterfaceChange;
   chai.assert.unaltered = assertInterfaceNoChange;
 
@@ -24,10 +24,10 @@ function plugin(chai,util) {
    * key to enforce a starting value, a `to` key for and ending value, and a
    * `by` key to enforce a numeric alters.
    *
-   *     expect(function() { x += 1 }).to.alter(function() { return x },{by: 1});
-   *     expect(function() { x += 1 }).to.alter(function() { return x },{from: x});
-   *     expect(function() { x += 1 }).to.alter(function() { return x },{from: x, to: x + 1});
-   *     expect(function() { x += 1 }).to.alter(function() { return x },{to: x + 1});
+   *     expect(function() { x += 1 }).to.alter(function() { return x }, {by: 1});
+   *     expect(function() { x += 1 }).to.alter(function() { return x }, {from: x});
+   *     expect(function() { x += 1 }).to.alter(function() { return x }, {from: x, to: x + 1});
+   *     expect(function() { x += 1 }).to.alter(function() { return x }, {to: x + 1});
    *
    * @name alters
    * @param {Function} changer
@@ -38,31 +38,40 @@ function plugin(chai,util) {
   function assertChange(changeWatcher, changeSpec, msg) {
     if(msg) flag(this, 'message', msg);
     var body = flag(this, 'object');
-    var negated = flag(this,'negate');
+    var negated = flag(this, 'negate');
 
     var chai = this;
     var FAIL = {};
 
     changeSpec = changeSpec || {}
 
-    withFail(function() {
+    return withFail(function() {
       if(changeSpec) new Assertion(changeSpec).is.a('object');
 
       new Assertion(body, msg).is.a('function');
       new Assertion(changeWatcher, msg).is.a('function');
 
       if(changeWatcher.length > 0 || body.length > 0) {
-        chai.assert(changeSpec.callback != null,"For asynchronous tests, need to pass a `done(err)` function as `callback:` option");
+        chai.assert(changeSpec.callback != null, 'For callback-based asynchronous tests, need to pass an error-first function as `callback:` option');
       }
 
-      runStep(changeWatcher,function(before) {
-        withFail(preconditions,before);
-        runStep(body,function() {
-          runStep(changeWatcher,function(after) {
-            var result = withFail(postconditions,before,after);
-            if(result !== FAIL && changeSpec.callback) changeSpec.callback();
+      return runStep(changeWatcher, function(before) {
+        var handledWithFail = withFail(preconditions, before);
+
+        var runNextStep = function() {
+          return runStep(body, function() {
+            return runStep(changeWatcher, function(after) {
+              var result = withFail(postconditions, before, after);
+              if(result !== FAIL && changeSpec.callback) changeSpec.callback();
+            });
           });
-        });
+        };
+
+        if(handledWithFail && handledWithFail.then) {
+          return handledWithFail.then(runNextStep);
+        }
+
+        return runNextStep();
       });
     });
 
@@ -79,7 +88,7 @@ function plugin(chai,util) {
       }
     }
 
-    function postconditions(before,after) {
+    function postconditions(before, after) {
       if('to' in changeSpec) {
         chai.assert(
             after === changeSpec.to
@@ -95,9 +104,18 @@ function plugin(chai,util) {
       }
     }
 
-    function runStep(fn,done) {
-      if(fn.length === 0) return done(withFail(fn));
-      fn(function(err,val) {
+    function runStep(fn, done) {
+      var handledWithFail;
+      if(fn.length === 0) {
+        handledWithFail = withFail(fn);
+
+        if(handledWithFail && handledWithFail.then) {
+          return handledWithFail.then(done).catch(fail);
+        }
+
+        return done(handledWithFail)
+      };
+      fn(function(err, val) {
         if(err) return fail(err);
         done(val);
       });
@@ -110,17 +128,14 @@ function plugin(chai,util) {
     }
 
     function withFail(fn) {
-      var args = [].slice.call(arguments,1);
+      var args = [].slice.call(arguments, 1);
       try {
-        return fn.apply(null,args);
+        return fn.apply(null, args);
       } catch(e) {
         fail(e);
         return FAIL;
       }
     }
-
-    return this;
-
   };
   /**
    * ### .alters(getValue)
@@ -129,16 +144,16 @@ function plugin(chai,util) {
    * alters after the `affect` function has run:
    *
    *     var x = 0;
-   *     assert.alters(function() { x += 1; },function() { return x });
+   *     assert.alters(function() { x += 1; }, function() { return x });
    *
    * You can pass options to be specific about the alters expected. Use the `from` 
    * key to enforce a starting value, a `to` key for and ending value, and a
    * `by` key to enforce a numeric alters.
    *
-   *     assert.alters(function() { x += 1 },function() { return x },{by: 1});
-   *     assert.alters(function() { x += 1 },function() { return x },{from: x});
-   *     assert.alters(function() { x += 1 },function() { return x },{from: x, to: x + 1});
-   *     assert.alters(function() { x += 1 },function() { return x },{to: x + 1});
+   *     assert.alters(function() { x += 1 }, function() { return x }, {by: 1});
+   *     assert.alters(function() { x += 1 }, function() { return x }, {from: x});
+   *     assert.alters(function() { x += 1 }, function() { return x }, {from: x, to: x + 1});
+   *     assert.alters(function() { x += 1 }, function() { return x }, {to: x + 1});
    *
    * @name alters
    * @param {Function} affect
@@ -152,7 +167,7 @@ function plugin(chai,util) {
       msg = opts;
       opts = null;
     }
-    new Assertion(fn, msg).to.alter(changeWatcher,opts);
+    new Assertion(fn, msg).to.alter(changeWatcher, opts);
   };
 
   /**
@@ -178,14 +193,14 @@ function plugin(chai,util) {
       msg = opts;
       opts = null;
     }
-    new Assertion(fn, msg).not.to.alter(changeWatcher,opts);
+    new Assertion(fn, msg).not.to.alter(changeWatcher, opts);
   };
 
 }
 
-if(typeof module === "undefined") {
-  if(typeof define === "function" && define.amd) {
-    define([],function() {
+if(typeof module === 'undefined') {
+  if(typeof define === 'function' && define.amd) {
+    define([], function() {
       return plugin;
     });
   } else {

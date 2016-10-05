@@ -94,99 +94,250 @@ describe('alter assertion enforces change',function() {
   });
 
   describe("asynchronous support",function() {
-    it("passes errors from getValue through to `callback:`",function() {
-      expect(function() {
-      }).to.alter(function(value) {
-        value("value error");
-      },{
-        callback: callback
+    describe('with error-first callbacks', function() {
+      it("passes errors from changeWatcher through to `callback:`",function() {
+        expect(function() {
+        }).to.alter(function(value) {
+          value("value error");
+        },{
+          callback: callback
+        });
+
+        var heard;
+        function callback(err) {
+          heard = err;
+        }
+        chai.assert.equal(heard,"value error");
+      });
+      it("passes errors from alter through to `callback:`",function() {
+        expect(function(done) {
+          done("alter error");
+        }).to.alter(function() {
+        },{
+          callback: callback
+        });
+
+        var heard;
+        function callback(err) {
+          heard = err;
+        }
+        chai.assert.equal(heard,"alter error");
+      });
+      it("can have synchronous changeWatcher and async alter function",function(done) {
+        var count = 0;
+        var User = {
+          create: function(attrs,cb) {
+            setTimeout(function() {
+              count += 1
+              cb();
+            })
+          },
+          count: function() { 
+            return count;
+          },
+        };
+        expect(function(done) {
+          User.create({name: "bob"},done)
+        }).to.alter(function() {
+          return User.count();
+        },{
+          by: 1,
+          callback: done
+        });
+      });
+      it("can have asynchronous changeWatcher and sync alter function",function(done) {
+        var count = 0;
+        var User = {
+          create: function(attrs,cb) {
+            count += 1
+          },
+          count: function(cb) {
+            setTimeout(function() {
+              cb(null,count);
+            })
+          },
+        };
+        expect(function() {
+          User.create({name: "bob"})
+        }).to.alter(function(value) {
+          User.count(value);
+        },{
+          by: 1,
+          callback: done
+        });
+      });
+      it("can have asynchronous changeWatcher and alter functions",function(done) {
+        var count = 0;
+        var User = {
+          create: function(attrs,cb) {
+            setTimeout(function() {
+              count += 1
+              cb();
+            })
+          },
+          count: function(cb) {
+            setTimeout(function() {
+              cb(null,count);
+            })
+          },
+        };
+        expect(function(done) {
+          User.create({name: "bob"},done)
+        }).to.alter(function(value) {
+          User.count(value);
+        },{
+          by: 1,
+          callback: done
+        });
+      });
+    });
+
+    describe('with promises', function() {
+      it('passes errors from changeWatcher through to `callback:`', function(done) {
+        expect(function() {
+        }).to.alter(function() {
+          return Promise.reject('value error');
+        }, {
+          callback: callback
+        });
+
+        function callback(err) {
+          chai.assert.equal(err, 'value error');
+          done();
+        }
       });
 
-      var heard;
-      function callback(err) {
-        heard = err;
-      }
-      chai.assert.equal(heard,"value error");
-    });
-    it("passes errors from alter through to `callback:`",function() {
-      expect(function(done) {
-        done("alter error");
-      }).to.alter(function() {
-      },{
-        callback: callback
+      it('passes errors from alter through to `callback:`', function(done) {
+        expect(function() {
+          return Promise.reject('alter error');
+        }).to.alter(function() {
+        }, {
+          callback: callback
+        });
+
+        function callback(err) {
+          chai.assert.equal(err, 'alter error');
+          done();
+        }
       });
 
-      var heard;
-      function callback(err) {
-        heard = err;
-      }
-      chai.assert.equal(heard,"alter error");
-    });
-    it("can have synchronous getValue and async alter function",function(done) {
-      var count = 0;
-      var User = {
-        create: function(attrs,cb) {
-          setTimeout(function() {
-            count += 1
-            cb();
-          })
-        },
-        count: function() { 
-          return count;
-        },
-      };
-      expect(function(done) {
-        User.create({name: "bob"},done)
-      }).to.alter(function() {
-        return User.count();
-      },{
-        by: 1,
-        callback: done
+      context('when only alter function returns a promise', function() {
+        it('returns a promise from the expectation', function(done) {
+          var count = 0;
+          return expect(function() {
+            count += 1;
+            return Promise.resolve();
+          }).to.alter(function() {
+            return count;
+          }, { by: 1 })
+          .then(done)
+          .catch(done);
+        });
       });
-    });
-    it("can have asynchronous getValue and sync alter function",function(done) {
-      var count = 0;
-      var User = {
-        create: function(attrs,cb) {
-          count += 1
-        },
-        count: function(cb) {
-          setTimeout(function() {
-            cb(null,count);
-          })
-        },
-      };
-      expect(function() {
-        User.create({name: "bob"})
-      }).to.alter(function(value) {
-        User.count(value);
-      },{
-        by: 1,
-        callback: done
+
+      context('when only changeWatcher returns a promise', function() {
+        it('returns a promise from the expectation', function(done) {
+          var count = 0;
+          return expect(function() {
+            count += 1;
+          }).to.alter(function() {
+            return Promise.resolve(count);
+          }, { by: 1 })
+          .then(done)
+          .catch(done);
+        });
       });
-    });
-    it("can have asynchronous getValue and alter functions",function(done) {
-      var count = 0;
-      var User = {
-        create: function(attrs,cb) {
-          setTimeout(function() {
+
+      context('when both changeWatcher and alter function return promises', function() {
+        it('returns a promise from the expectation', function(done) {
+          var count = 0;
+          return expect(function() {
+            count += 1;
+            return Promise.resolve();
+          }).to.alter(function() {
+            return Promise.resolve(count);
+          }, { by: 1 })
+          .then(done)
+          .catch(done);
+        });
+      });
+
+      it('can have synchronous changeWatcher and async alter function', function(done) {
+        var count = 0;
+        var User = {
+          create: function() {
+            return new Promise(function(resolve) {
+              setTimeout(function() {
+                count += 1
+                resolve();
+              });
+            });
+          },
+          count: function() { 
+            return count;
+          },
+        };
+        expect(function() {
+          return User.create({name: "bob"});
+        }).to.alter(function() {
+          return User.count();
+        }, {
+          by: 1,
+          callback: done
+        });
+      });
+
+      it('can have asynchronous changeWatcher and sync alter function', function(done) {
+        var count = 0;
+        var User = {
+          create: function() {
             count += 1
-            cb();
-          })
-        },
-        count: function(cb) {
-          setTimeout(function() {
-            cb(null,count);
-          })
-        },
-      };
-      expect(function(done) {
-        User.create({name: "bob"},done)
-      }).to.alter(function(value) {
-        User.count(value);
-      },{
-        by: 1,
-        callback: done
+          },
+          count: function() {
+            return new Promise(function(resolve, reject) {
+              setTimeout(function() {
+                resolve(count);
+              });
+            });
+          },
+        };
+        expect(function() {
+          User.create({name: "bob"})
+        }).to.alter(function() {
+          return User.count();
+        }, {
+          by: 1,
+          callback: done
+        });
+      });
+
+      it('can have asynchronous changeWatcher and alter functions', function(done) {
+        var count = 0;
+        var User = {
+          create: function() {
+            return new Promise(function(resolve, reject) {
+              setTimeout(function() {
+                count += 1
+                resolve();
+              })
+            });
+          },
+          count: function() {
+            return new Promise(function(resolve, reject) {
+              setTimeout(function() {
+                resolve(count);
+              });
+            });
+          },
+        };
+        expect(function() {
+          return User.create({name: "bob"});
+        }).to.alter(function() {
+          return User.count();
+        },{
+          by: 1,
+          callback: done
+        });
       });
     });
   })

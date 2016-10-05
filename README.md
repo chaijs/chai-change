@@ -111,7 +111,9 @@ function doesNothing() {}
 
 ## Asynchronous asserts
 
-Both the `affect` and `getValue` callbacks can optionally take a node-style callback, with `error` as the first parameter. If you provide either with a callback, you need to give a final `callback:` option to the change assertion, that is used to notify your test runner that the test is complete. This works best with test runners that expect node callbacks to control async tests, like mocha in the below example:
+Both the `affect` and `getValue` callbacks can optionally take a node-style callback, with `error` as the first parameter, or return a promise. If you provide a callback or return a promise for either of them, you need to give a final `callback:` option to the change assertion, that is used to notify your test runner that the test is complete.
+
+### With error-first callback
 
 ```javascript
 var count = 0;
@@ -120,12 +122,12 @@ var User = {
     setTimeout(function() {
       count += 1
       cb();
-    })
+    });
   },
   count: function(cb) {
     setTimeout(function() {
       cb(null,count);
-    })
+    });
   },
 };
 
@@ -139,9 +141,52 @@ expect(function(stepDone) {
 });
 ```
 
+### With promises
+
+
+```javascript
+var count = 0;
+var User = {
+  create: function(attrs) {
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        count += 1
+        resolve();
+      });
+    });
+  },
+  count: function() {
+    new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        resolve(count);
+      });
+    });
+  },
+};
+
+expect(function() {
+  return User.create({name: "bob"});
+}).to.alter(function() {
+  return User.count();
+},{
+  by: 1,
+  callback: done
+});
+
+expect(function() {
+  return User.create({name: "bob"});
+}).to.alter(function() {
+  return User.count();
+},{
+  by: 1
+}).then(done);
+
+// when `affect` or `getValue` returns a promise the expectation will return a promise as well
+```
+
 ## Tests
 
-Node: `npm install && mocha`.
+Node: `npm install && npm test`.
 
 Browser: `npm install` then open `test/index.html`.
 
