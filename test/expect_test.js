@@ -312,8 +312,66 @@ describe('alter assertion enforces change',function() {
       });
 
       it('can have asynchronous changeWatcher and alter functions', function(done) {
+        var User = userSetupAsync();
+
+        expect(function() {
+          return User.create({name: "bob"});
+        }).to.alter(function() {
+          return User.count();
+        },{
+          by: 1,
+          callback: done
+        });
+      });
+
+      it('works in passing cases without callback: option', function() {
+        var User = userSetupAsync();
+        return expect(function() {
+          return User.create({name: "bob"});
+        }).to.alter(function() {
+          return User.count();
+        },{
+          by: 1,
+        });
+      });
+
+      it('works in failing cases without callback: option', function() {
+        var User = userSetupAsync();
+
+        return assertRejected(/expected.+to change/, expect(function() {
+          return new Promise(function(resolve) { resolve() });
+        }).to.alter(function() {
+          return User.count();
+        },{
+          by: 1,
+        }))
+      });
+
+      it('rejects if affect rejects', function() {
+        var User = userSetupAsync();
+
+        return assertRejected(/fail/, expect(function() {
+          return new Promise(function(resolve, reject) { reject(Error("fail")) });
+        }).to.alter(function() {
+          return User.count();
+        },{
+          by: 1,
+        }))
+      });
+
+      it('rejects if getValue rejects', function() {
+        return assertRejected(/fail/, expect(function() {
+          return new Promise(function(resolve) { resolve() });
+        }).to.alter(function() {
+          return new Promise(function(resolve, reject) { reject(Error("fail")) });
+        },{
+          by: 1,
+        }))
+      });
+
+      function userSetupAsync() {
         var count = 0;
-        var User = {
+        return {
           create: function() {
             return new Promise(function(resolve, reject) {
               setTimeout(function() {
@@ -330,15 +388,7 @@ describe('alter assertion enforces change',function() {
             });
           },
         };
-        expect(function() {
-          return User.create({name: "bob"});
-        }).to.alter(function() {
-          return User.count();
-        },{
-          by: 1,
-          callback: done
-        });
-      });
+      }
     });
   })
 
@@ -355,3 +405,18 @@ describe('alter assertion enforces change',function() {
   });
 
 });
+
+function assertRejected(matcher, p) {
+  var rejected = false;
+  
+  return p.catch(function (err){
+    rejected = true;
+    expect(err.message).to.match(matcher);
+  })
+  .then(function (v) {
+    if(!rejected) {
+      throw Error("should have been rejected, but was resolved with: " + v);
+    }
+    return v;
+  })
+}
