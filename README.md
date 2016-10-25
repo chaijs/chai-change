@@ -14,7 +14,7 @@ expect(users.count()).to.equal(1);
 instead assert that the action actually causes the expected change
 
 ```javascript
-expect(function() {
+expect(() => {
   users.create();
 }).to.alter(users.count,{by: 1});
 ```
@@ -44,7 +44,7 @@ If you are using `chai-change` in the browser, there is nothing you need to do.
 If you are using node, you just need to tell `chai` about the plugin:
 
 ```js
-var chai = require('chai');
+const chai = require('chai');
 
 chai.use(require('chai-change'));
 ```
@@ -56,20 +56,20 @@ chai.use(require('chai-change'));
 Asserts that the value returned by function passed to `change()` changes after the function has run:
 
 ```javascript
-var x = 0;
+let x = 0;
 
-expect(function() { x += 1; }).to.alter(function() { return x });
-expect(function() {     }).not.to.alter(function() { return x });
+expect(() => { x += 1; }).to.alter(() => x);
+expect(() => {         }).not.to.alter(() => x);
 ```
 
 You can pass options to be specific about the changes expected. Use the `from` key to enforce a starting value, a `to` key for and ending value, and a
 `by` key to enforce a numeric change.
 
 ```javascript
-expect(function() { x += 1 }).to.alter(function() { return x },{by: 1});
-expect(function() { x += 1 }).to.alter(function() { return x },{from: x});
-expect(function() { x += 1 }).to.alter(function() { return x },{from: x, to: x + 1});
-expect(function() { x += 1 }).to.alter(function() { return x },{to: x + 1});
+expect(() => { x += 1 }).to.alter(() => x, { by: 1 });
+expect(() => { x += 1 }).to.alter(() => x, { from: x });
+expect(() => { x += 1 }).to.alter(() => x, { from: x, to: x + 1 });
+expect(() => { x += 1 }).to.alter(() => x, { to: x + 1 });
 ```
 
 ## Assert API
@@ -80,8 +80,8 @@ Asserts that the value returned by `getValue`
 changes after the `affect` function has run:
                                                                                        
 ```javascript
-var x = 0;
-assert.alters(affect,getValue);
+let x = 0;
+assert.alters(affect, getValue);
 
 function affect() { x += 1; }
 function getValue() { return x }
@@ -92,10 +92,10 @@ key to enforce a starting value, a `to` key for and ending value, and a
 `by` key to enforce a numeric change.
                                                                                        
 ```javascript
-assert.alters(function() { x += 1 },function() { return x },{by: 1});
-assert.alters(function() { x += 1 },function() { return x },{from: x});
-assert.alters(function() { x += 1 },function() { return x },{from: x, to: x + 1});
-assert.alters(function() { x += 1 },function() { return x },{to: x + 1});
+assert.alters(() => { x += 1 }, () => x, { by: 1 });
+assert.alters(() => { x += 1 }, () => x, { from: x });
+assert.alters(() => { x += 1 }, () => x, { from: x, to: x + 1 });
+assert.alters(() => { x += 1 }, () => x, { to: x + 1 });
 ```
 
 ### assert.unaltered
@@ -104,8 +104,8 @@ Asserts that the value returned by `getValue`
 doesn't change after the `affect` has run:
                                                           
 ```javascript
-var x = 0;
-assert.unaltered(doesNothing,function() { return x });
+let x = 0;
+assert.unaltered(doesNothing, () => x);
 function doesNothing() {}
 ```
 
@@ -121,20 +121,20 @@ If your runner doesn't support returning promises, you can use the `.then()` met
 
 ```javascript
 
-it("creates a user", function() {
-  var count = 0;
-  var User = {
-    create: (attrs) {
-      return new Promise(function(resolve, reject) {
-        setTimeout(function() {
+it("creates a user", () => {
+  let count = 0;
+  const User = {
+    create(attrs) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
           count += 1
           resolve();
         });
       });
     },
-    count: function() {
-      return new Promise(function(resolve, reject) {
-        setTimeout(function() {
+    count() {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
           resolve(count);
         });
       });
@@ -142,11 +142,11 @@ it("creates a user", function() {
   };
 
   // when `affect` or `getValue` returns a promise the expectation will return a promise as well
-  return expect(function() {
-    return User.create({name: "bob"});
-  }).to.alter(function() {
-    return User.count();
-  },{
+  return expect(() => (
+    User.create({name: "bob"});
+  )).to.alter(() => (
+    User.count();
+  ),{
     by: 1,
   });
 })
@@ -155,24 +155,24 @@ it("creates a user", function() {
 ### With error-first callback
 
 ```javascript
-var count = 0;
-var User = {
-  create: function(attrs,cb) {
-    setTimeout(function() {
+let count = 0;
+const User = {
+  create(attrs,cb) {
+    setTimeout(() => {
       count += 1
       cb();
     });
   },
-  count: function(cb) {
-    setTimeout(function() {
+  count(cb) {
+    setTimeout(() => {
       cb(null,count);
     });
   },
 };
 
-expect(function(stepDone) {
-  User.create({name: "bob"},stepDone)
-}).to.alter(function(stepDone) {
+expect((stepDone) => {
+  User.create({name: "bob"}, stepDone)
+}).to.alter((stepDone) => {
   User.count(stepDone);
 },{
   by: 1,
@@ -197,4 +197,3 @@ Both the `getValue` and `affect` functions can now return promises. The expectat
 ### 2.0
 
 - *BREAKING CHANGE* Change whole API from `change` to `alter` to avoid the `.change` method added to chai in `chai@2.0.0`.
-
