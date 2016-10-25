@@ -20,7 +20,7 @@ function plugin(chai, util) {
    *
    *     expect(function() {}).not.to.alter(function() { return x });
    *
-   * You can pass options to be specific about the alters expected. Use the `from` 
+   * You can pass options to be specific about the alters expected. Use the `from`
    * key to enforce a starting value, a `to` key for and ending value, and a
    * `by` key to enforce a numeric alters.
    *
@@ -77,7 +77,7 @@ function plugin(chai, util) {
 
     function preconditions(before) {
       if('by' in changeSpec) {
-        if(typeof changeSpec.by !== 'number' || 
+        if(typeof changeSpec.by !== 'number' ||
             (changeSpec.from != null && typeof changeSpec.from !== 'number')) {
           throw new Error('alters "by" assertions only work with numbers specified in "by" and or "from" options');
         }
@@ -146,7 +146,7 @@ function plugin(chai, util) {
    *     var x = 0;
    *     assert.alters(function() { x += 1; }, function() { return x });
    *
-   * You can pass options to be specific about the alters expected. Use the `from` 
+   * You can pass options to be specific about the alters expected. Use the `from`
    * key to enforce a starting value, a `to` key for and ending value, and a
    * `by` key to enforce a numeric alters.
    *
@@ -167,7 +167,7 @@ function plugin(chai, util) {
       msg = opts;
       opts = null;
     }
-    new Assertion(fn, msg).to.alter(changeWatcher, opts);
+    return new Assertion(fn, msg).to.alter(changeWatcher, opts);
   };
 
   /**
@@ -193,7 +193,7 @@ function plugin(chai, util) {
       msg = opts;
       opts = null;
     }
-    new Assertion(fn, msg).not.to.alter(changeWatcher, opts);
+    return new Assertion(fn, msg).not.to.alter(changeWatcher, opts);
   };
 
 }
@@ -209,6 +209,4 @@ if(typeof module === 'undefined') {
 } else {
   module.exports = plugin;
 }
-
-
 })();
