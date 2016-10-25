@@ -111,7 +111,7 @@ function doesNothing() {}
 
 ## Asynchronous asserts
 
-Both the `affect` and `getValue` callbacks can optionally take a node-style callback, with `error` as the first parameter, or return a promise. If you provide a callback or return a promise for either of them, you need to give a final `callback:` option to the change assertion, that is used to notify your test runner that the test is complete.
+Both the `affect` and `getValue` callbacks can return a promise, or take a node-style callback, with `error` as the first parameter. If you provide a callback you need to give a final `callback:` option to the change assertion, that is used to notify your test runner that the test is complete.
 
 ### With error-first callback
 
@@ -141,47 +141,41 @@ expect(function(stepDone) {
 });
 ```
 
-### With promises
+### With promises (with promise aware test runner)
 
+Many test runners - for instance [mocha](https://github.com/mochajs/mocha) - support simply returning promises from `it()` or `test()` blocks to support asynchronous tsts. chai-change supports this style:
 
 ```javascript
-var count = 0;
-var User = {
-  create: function(attrs) {
-    return new Promise(function(resolve, reject) {
-      setTimeout(function() {
-        count += 1
-        resolve();
+
+it("creates a user", function() {
+  var count = 0;
+  var User = {
+    create: (attrs) {
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          count += 1
+          resolve();
+        });
       });
-    });
-  },
-  count: function() {
-    new Promise(function(resolve, reject) {
-      setTimeout(function() {
-        resolve(count);
+    },
+    count: function() {
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          resolve(count);
+        });
       });
-    });
-  },
-};
+    },
+  };
 
-expect(function() {
-  return User.create({name: "bob"});
-}).to.alter(function() {
-  return User.count();
-},{
-  by: 1,
-  callback: done
-});
-
-expect(function() {
-  return User.create({name: "bob"});
-}).to.alter(function() {
-  return User.count();
-},{
-  by: 1
-}).then(done);
-
-// when `affect` or `getValue` returns a promise the expectation will return a promise as well
+  // when `affect` or `getValue` returns a promise the expectation will return a promise as well
+  return expect(function() {
+    return User.create({name: "bob"});
+  }).to.alter(function() {
+    return User.count();
+  },{
+    by: 1,
+  });
+})
 ```
 
 ## Tests
