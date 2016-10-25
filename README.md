@@ -113,37 +113,11 @@ function doesNothing() {}
 
 Both the `affect` and `getValue` callbacks can return a promise, or take a node-style callback, with `error` as the first parameter. If you provide a callback you need to give a final `callback:` option to the change assertion, that is used to notify your test runner that the test is complete.
 
-### With error-first callback
+### With promises
 
-```javascript
-var count = 0;
-var User = {
-  create: function(attrs,cb) {
-    setTimeout(function() {
-      count += 1
-      cb();
-    });
-  },
-  count: function(cb) {
-    setTimeout(function() {
-      cb(null,count);
-    });
-  },
-};
+Many test runners - for instance [mocha](https://github.com/mochajs/mocha) - support simply returning promises from `it()` or `test()` blocks to support asynchronous tsts. chai-change supports this style.
 
-expect(function(stepDone) {
-  User.create({name: "bob"},stepDone)
-}).to.alter(function(stepDone) {
-  User.count(stepDone);
-},{
-  by: 1,
-  callback: done
-});
-```
-
-### With promises (with promise aware test runner)
-
-Many test runners - for instance [mocha](https://github.com/mochajs/mocha) - support simply returning promises from `it()` or `test()` blocks to support asynchronous tsts. chai-change supports this style:
+If your runner doesn't support returning promises, you can use the `.then()` method to call a callback based API etc (or use `callback:` as in the error-first callback docs below.
 
 ```javascript
 
@@ -176,6 +150,34 @@ it("creates a user", function() {
     by: 1,
   });
 })
+```
+
+### With error-first callback
+
+```javascript
+var count = 0;
+var User = {
+  create: function(attrs,cb) {
+    setTimeout(function() {
+      count += 1
+      cb();
+    });
+  },
+  count: function(cb) {
+    setTimeout(function() {
+      cb(null,count);
+    });
+  },
+};
+
+expect(function(stepDone) {
+  User.create({name: "bob"},stepDone)
+}).to.alter(function(stepDone) {
+  User.count(stepDone);
+},{
+  by: 1,
+  callback: done
+});
 ```
 
 ## Tests
