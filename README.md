@@ -16,7 +16,7 @@ instead assert that the action actually causes the expected change
 ```javascript
 expect(() => {
   users.create();
-}).to.alter(users.count,{by: 1});
+}).to.alter(users.count, { by: 1 });
 ```
 
 This is more robust as it avoids false positives: in this example, if `users.count()` was already 1 and `users.create()` was not implemented, the first example would still pass. Using the change expectation, since there was not a change `{by: 1}` from the starting value, the test would correctly fail.
@@ -105,8 +105,8 @@ doesn't change after the `affect` has run:
                                                           
 ```javascript
 let x = 0;
-assert.unaltered(doesNothing, () => x);
-function doesNothing() {}
+const noop = () => undefined;
+assert.unaltered(noop, () => x);
 ```
 
 ## Asynchronous asserts
