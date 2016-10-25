@@ -190,7 +190,7 @@ Browser: `npm install` then open `test/index.html`.
 
 ### 2.1
 
-Promise support - thanks to (@talyssonoc)[https://github.com/talyssonoc]!
+Promise support - thanks to [@talyssonoc](https://github.com/talyssonoc)!
 
 Both the `getValue` and `affect` functions can now return promises. The expectation also returns a promise when used with promises, which can be used directly with mocha etc.
 
