@@ -132,7 +132,7 @@ describe('alter assertion enforces change',function() {
               cb();
             })
           },
-          count: function() { 
+          count: function() {
             return count;
           },
         };
@@ -273,7 +273,7 @@ describe('alter assertion enforces change',function() {
               });
             });
           },
-          count: function() { 
+          count: function() {
             return count;
           },
         };
@@ -390,25 +390,24 @@ describe('alter assertion enforces change',function() {
         };
       }
     });
-  })
+  });
 
   it("has working examples",function() {
     var x = 0;
     expect(function() { x += 1; }).to.alter(function() { return x });
-   
+
     expect(function() {}).not.to.alter(function() { return x });
-   
+
     expect(function() { x += 1 }).to.alter(function() { return x },{by: 1});
     expect(function() { x += 1 }).to.alter(function() { return x },{from: x});
     expect(function() { x += 1 }).to.alter(function() { return x },{from: x, to: x + 1});
     expect(function() { x += 1 }).to.alter(function() { return x },{to: x + 1});
   });
-
 });
 
 function assertRejected(matcher, p) {
   var rejected = false;
-  
+
   return p.catch(function (err){
     rejected = true;
     expect(err.message).to.match(matcher);
@@ -418,5 +417,5 @@ function assertRejected(matcher, p) {
       throw Error("should have been rejected, but was resolved with: " + v);
     }
     return v;
-  })
+  });
 }
