@@ -12,10 +12,10 @@
   },
   "license": "BSD-2-Clause",
   "devDependencies": {
-    "chai": "~1.9.1",
+    "chai": "~3.5.0",
     "es6-promise": "^4.0.5",
-    "mocha": "~1.18.2",
-    "requirejs": "~2.1.11"
+    "mocha": "~3.1.2",
+    "requirejs": "~2.3.2"
   },
   "repository": {
     "type": "git",
