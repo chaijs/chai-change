@@ -8,12 +8,16 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "coverage": "istanbul cover --report html node_modules/mocha/bin/_mocha",
+    "lint": "eslint {src,test}/**/*.js"
   },
   "license": "BSD-2-Clause",
   "devDependencies": {
     "chai": "~1.9.1",
     "es6-promise": "^4.0.5",
+    "eslint": "^3.9.1",
+    "istanbul": "^0.4.5",
     "mocha": "~1.18.2",
     "requirejs": "~2.1.11"
   },
