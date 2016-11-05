@@ -76,15 +76,15 @@ expect(() => { x += 1 }).to.alter(() => x, { to: x + 1 });
 
 ### assert.alters
 
-Asserts that the value returned by `getValue`
-changes after the `affect` function has run:
+Asserts that the value returned by `changeWatcher`
+changes after the `changer` function has run:
                                                                                        
 ```javascript
 let x = 0;
-assert.alters(affect, getValue);
+assert.alters(changer, changeWatcher);
 
-function affect() { x += 1; }
-function getValue() { return x }
+function changer() { x += 1; }
+function changeWatcher() { return x }
 ```
                                                                                        
 You can pass options to be specific about the changes expected. Use the `from` 
@@ -100,8 +100,8 @@ assert.alters(() => { x += 1 }, () => x, { to: x + 1 });
 
 ### assert.unaltered
 
-Asserts that the value returned by `getValue`
-doesn't change after the `affect` has run:
+Asserts that the value returned by `changeWatcher`
+doesn't change after the `changer` has run:
                                                           
 ```javascript
 let x = 0;
@@ -111,7 +111,7 @@ assert.unaltered(noop, () => x);
 
 ## Asynchronous asserts
 
-Both the `affect` and `getValue` callbacks can return a promise, or take a node-style callback, with `error` as the first parameter. If you provide a callback you need to give a final `callback:` option to the change assertion, that is used to notify your test runner that the test is complete.
+Both the `changer` and `changeWatcher` callbacks can return a promise, or take a node-style callback, with `error` as the first parameter. If you provide a callback you need to give a final `callback:` option to the change assertion, that is used to notify your test runner that the test is complete.
 
 ### With promises
 
@@ -141,7 +141,7 @@ it("creates a user", () => {
     },
   };
 
-  // when `affect` or `getValue` returns a promise the expectation will return a promise as well
+  // when `changer` or `changeWatcher` returns a promise the expectation will return a promise as well
   return expect(() => (
     User.create({name: "bob"});
   )).to.alter(() => (
@@ -192,7 +192,7 @@ Browser: `npm install` then open `test/index.html`.
 
 Promise support - thanks to [@talyssonoc](https://github.com/talyssonoc)!
 
-Both the `getValue` and `affect` functions can now return promises. The expectation also returns a promise when used with promises, which can be used directly with mocha etc.
+Both the `changeWatcher` and `changer` functions can now return promises. The expectation also returns a promise when used with promises, which can be used directly with mocha etc.
 
 ### 2.0
 

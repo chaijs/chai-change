@@ -1,3 +1,4 @@
 --require test/setup.js
 --ui bdd
 --reporter spec
+**/*.test.js
