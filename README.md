@@ -45,8 +45,17 @@ If you are using node, you just need to tell `chai` about the plugin:
 
 ```js
 const chai = require('chai');
+const chaiChange = require('chai-change');
 
-chai.use(require('chai-change'));
+chai.use(chaiChange);
+```
+
+If you're using ES6 import syntax:
+```js
+import chai from 'chai';
+import chaiChange from 'chai-change';
+
+chai.use(chaiChange);
 ```
 
 ## Expect API
