@@ -126,8 +126,6 @@ Both the `changer` and `changeWatcher` callbacks can return a promise, or take a
 
 Many test runners - for instance [mocha](https://github.com/mochajs/mocha) - support simply returning promises from `it()` or `test()` blocks to support asynchronous tsts. chai-change supports this style.
 
-If your runner doesn't support returning promises, you can use the `.then()` method to call a callback based API etc (or use `callback:` as in the error-first callback docs below.
-
 ```javascript
 
 it("creates a user", () => {
@@ -161,7 +159,11 @@ it("creates a user", () => {
 })
 ```
 
+If your runner doesn't support returning promises, you can use the `.then()` method to call a callback based API etc (or use `callback:` as in the error-first callback docs below.
+
 ### With error-first callback
+
+If your runner supports a callback for indicating the result of an async test, pass it in as the `callback:` option:
 
 ```javascript
 let count = 0;
